@@ -1,3 +1,11 @@
+module "label" {
+  source    = "git::https://github.com/cloudposse/tf_label.git"
+  namespace = "${var.namespace}"
+  name      = "${var.name}"
+  stage     = "${var.stage}"
+}
+
+
 data "aws_iam_policy_document" "assume-role-policy" {
   statement {
 
@@ -18,7 +26,7 @@ data "aws_iam_policy_document" "assume-role-policy" {
 }
 
 resource "aws_iam_role" "ops" {
-  name = "ops"
+  name = "${module.label.id}-ops"
   assume_role_policy = "${data.aws_iam_policy_document.assume-role-policy.json}"
 }
 resource "aws_iam_role_policy_attachment" "ops" {
@@ -27,7 +35,7 @@ resource "aws_iam_role_policy_attachment" "ops" {
 }
 
 resource "aws_iam_role" "readonly" {
-  name = "readonly"
+  name = "${module.label.id}-readonly"
   assume_role_policy = "${data.aws_iam_policy_document.assume-role-policy.json}"
 }
 resource "aws_iam_role_policy_attachment" "readonly" {
