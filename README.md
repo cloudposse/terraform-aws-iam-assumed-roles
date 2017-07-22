@@ -23,7 +23,7 @@ resource "aws_iam_user" "op" {
 }
 
 module "assumed_roles" {
-  source       = "github.com/cloudposse/tf_assumed_roles?ref=init"
+  source       = "github.com/cloudposse/tf_assumed_roles"
   iam_user_arn = "${aws_iam_user.deploy.arn},${aws_iam_user.op.arn}"
   namespace    = "test"
   stage        = "dev"
