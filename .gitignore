@@ -5,5 +5,5 @@
 # Module directory
 .terraform/
 
-# Local vluses of vars
+# Local values for vars
 terraform.tfvars
