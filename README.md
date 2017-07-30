@@ -1,6 +1,11 @@
 # tf_assumed_roles
 
-Provides two IAM roles and two IAM groups allowing assume roles
+Provides two IAM roles and two IAM groups assuming these roles
+
+- role and group named as **ops** has Administratror (full) access to AWS resources
+- role and group named as **readonly** has ReadOnly access to AWS resources
+
+To give some user Administrator's access just add user to group **ops**
 
 ### Module usage
 
