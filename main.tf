@@ -84,6 +84,22 @@ resource "aws_iam_policy" "ManageMFA" {
   policy      = "${data.aws_iam_policy_document.ManageMFA.json}"
 }
 
+data "aws_iam_policy_document" "AllowChangePassword" {
+  statement {
+    actions = ["iam:ChangePassword"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
+  }
+  statement {
+    actions = ["iam:GetAccountPasswordPolicy"]
+    resources = ["*"]
+  }
+}
+resource "aws_iam_policy" "AllowChangePassword" {
+  name        = "AllowChangePassword"
+  policy      = "${data.aws_iam_policy_document.AllowChangePassword.json}"
+}
+
+
 resource "aws_iam_group" "ops" {
   name = "ops"
 }
@@ -94,6 +110,10 @@ resource "aws_iam_group_policy_attachment" "AssumeRoleOps" {
 resource "aws_iam_group_policy_attachment" "ManageMFA-ops" {
   group      = "${aws_iam_group.ops.name}"
   policy_arn = "${aws_iam_policy.ManageMFA.arn}"
+}
+resource "aws_iam_group_policy_attachment" "AllowChagePassword-ops" {
+  group      = "${aws_iam_group.ops.name}"
+  policy_arn = "${aws_iam_policy.AllowChangePassword.arn}"
 }
 
 resource "aws_iam_group" "readonly" {
@@ -106,6 +126,10 @@ resource "aws_iam_group_policy_attachment" "AssumeRoleReadOnly" {
 resource "aws_iam_group_policy_attachment" "ManageMFA-ro" {
   group      = "${aws_iam_group.readonly.name}"
   policy_arn = "${aws_iam_policy.ManageMFA.arn}"
+}
+resource "aws_iam_group_policy_attachment" "AllowChagePassword-ro" {
+  group      = "${aws_iam_group.readonly.name}"
+  policy_arn = "${aws_iam_policy.AllowChangePassword.arn}"
 }
 
 resource "aws_iam_role" "ops" {
