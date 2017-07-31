@@ -1,13 +1,13 @@
 # Groups output information
 #
-output "group_ops_id" {
-  value = "${aws_iam_group.ops.id}"
+output "group_admin_id" {
+  value = "${aws_iam_group.admin.id}"
 }
-output "group_ops_arn" {
-  value = "${aws_iam_group.ops.arn}"
+output "group_admin_arn" {
+  value = "${aws_iam_group.admin.arn}"
 }
-output "group_ops_name" {
-  value = "${aws_iam_group.ops.name}"
+output "group_admin_name" {
+  value = "${aws_iam_group.admin.name}"
 }
 
 output "group_readonly_id" {
@@ -22,11 +22,11 @@ output "group_readonly_name" {
 
 # Roles output information
 #
-output "role_ops_arn" {
-  value = "${aws_iam_role.ops.arn}"
+output "role_admin_arn" {
+  value = "${aws_iam_role.admin.arn}"
 }
-output "role_ops_name" {
-  value = "${aws_iam_role.ops.name}"
+output "role_admin_name" {
+  value = "${aws_iam_role.admin.name}"
 }
 
 output "role_readonly_arn" {

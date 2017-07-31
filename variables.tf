@@ -1,8 +1,8 @@
-variable "ops_group_name" {
+variable "admin_group_name" {
   default = "ops"
 }
 
-variable "ops_role_name" {
+variable "admin_role_name" {
   default = "ops"
 }
 

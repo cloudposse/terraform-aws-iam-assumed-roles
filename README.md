@@ -37,7 +37,7 @@ module "assumed_roles" {
 resource "aws_iam_group_membership" "ops" {
   name = "ops-group-membership"
   users = ["${aws_iam_user.Alice.name}"]
-  group = "${module.assumed_roles.group_ops_name}"
+  group = "${module.assumed_roles.group_admin_name}"
 }
 
 # Diana will be in 'readonly' group with 'ReadOnlyAccess'
@@ -52,23 +52,23 @@ resource "aws_iam_group_membership" "ro" {
 
 ### Argument Reference
 
-- `ops_role_name` - (Optional, default "ops") Name for IAM role with Administrator access
-- `ops_group_name` - (Optional, default "ops") Name for group assuming ops role
+- `admin_role_name` - (Optional, default "ops") Name for IAM role with Administrator access
+- `admin_group_name` - (Optional, default "ops") Name for group assuming ops role
 - `readonly_role_name` - (Optional, default "readonly") Name for IAM role with ReadOnly access
 - `readonly_group_name` - (Optional, default "readonly") Name for group assuming readonly IAM role
 
 ### Attributes Reference
 
-- `group_ops_id` - the Administrator group's ID.
-- `group_ops_arn` - the Amazon Resource Name (ARN) specifying the Administrator group.
-- `group_ops_name` - the Administrator group's name.
+- `group_admin_id` - the Administrator group's ID.
+- `group_admin_arn` - the Amazon Resource Name (ARN) specifying the Administrator group.
+- `group_admin_name` - the Administrator group's name.
 
 - `group_readonly_id` - the ReadOnly group's ID.
 - `group_readonly_arn` - the Amazon Resource Name (ARN) specifying the ReadOnly group.
 - `group_readonly_name` - the ReadOnly group's name.
 
-- `role_ops_arn` - the Amazon Resource Name (ARN) specifying the Administrator role.
-- `role_ops_name` - the Administrator role's name.
+- `role_admin_arn` - the Amazon Resource Name (ARN) specifying the Administrator role.
+- `role_admin_name` - the Administrator role's name.
 
 - `role_readonly_arn` - the Amazon Resource Name (ARN) specifying the ReadOnly role.
 - `role_readonly_name` - the ReadOnly role's name.

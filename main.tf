@@ -16,15 +16,15 @@ data "aws_iam_policy_document" "role_trust" {
   }
 }
 
-data "aws_iam_policy_document" "assume_role_ops" {
+data "aws_iam_policy_document" "assume_role_admin" {
   statement {
     actions = ["sts:AssumeRole"]
-    resources = ["${aws_iam_role.ops.arn}"]
+    resources = ["${aws_iam_role.admin.arn}"]
   }
 }
-resource "aws_iam_policy" "assume_role_ops" {
-  name        = "AssumeRoleOps"
-  policy      = "${data.aws_iam_policy_document.assume_role_ops.json}"
+resource "aws_iam_policy" "assume_role_admin" {
+  name        = "AssumeRoleAdmin"
+  policy      = "${data.aws_iam_policy_document.assume_role_admin.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_readonly" {
@@ -100,19 +100,19 @@ resource "aws_iam_policy" "allow_change_password" {
 }
 
 
-resource "aws_iam_group" "ops" {
-  name = "${var.ops_group_name}"
+resource "aws_iam_group" "admin" {
+  name = "${var.admin_group_name}"
 }
-resource "aws_iam_group_policy_attachment" "assume_role_ops" {
-  group      = "${aws_iam_group.ops.name}"
-  policy_arn = "${aws_iam_policy.assume_role_ops.arn}"
+resource "aws_iam_group_policy_attachment" "assume_role_admin" {
+  group      = "${aws_iam_group.admin.name}"
+  policy_arn = "${aws_iam_policy.assume_role_admin.arn}"
 }
-resource "aws_iam_group_policy_attachment" "manage_mfa_ops" {
-  group      = "${aws_iam_group.ops.name}"
+resource "aws_iam_group_policy_attachment" "manage_mfa_admin" {
+  group      = "${aws_iam_group.admin.name}"
   policy_arn = "${aws_iam_policy.manage_mfa.arn}"
 }
-resource "aws_iam_group_policy_attachment" "allow_chage_password_ops" {
-  group      = "${aws_iam_group.ops.name}"
+resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
+  group      = "${aws_iam_group.admin.name}"
   policy_arn = "${aws_iam_policy.allow_change_password.arn}"
 }
 
@@ -132,12 +132,12 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   policy_arn = "${aws_iam_policy.allow_change_password.arn}"
 }
 
-resource "aws_iam_role" "ops" {
-  name = "${var.ops_role_name}"
+resource "aws_iam_role" "admin" {
+  name = "${var.admin_role_name}"
   assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
-resource "aws_iam_role_policy_attachment" "ops" {
-    role       = "${aws_iam_role.ops.name}"
+resource "aws_iam_role_policy_attachment" "admin" {
+    role       = "${aws_iam_role.admin.name}"
     policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
