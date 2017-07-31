@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "role-trust" {
+data "aws_iam_policy_document" "role_trust" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -16,29 +16,29 @@ data "aws_iam_policy_document" "role-trust" {
   }
 }
 
-data "aws_iam_policy_document" "AssumeRoleOps" {
+data "aws_iam_policy_document" "assume_role_ops" {
   statement {
     actions = ["sts:AssumeRole"]
     resources = ["${aws_iam_role.ops.arn}"]
   }
 }
-resource "aws_iam_policy" "AssumeRoleOps" {
+resource "aws_iam_policy" "assume_role_ops" {
   name        = "AssumeRoleOps"
-  policy      = "${data.aws_iam_policy_document.AssumeRoleOps.json}"
+  policy      = "${data.aws_iam_policy_document.assume_role_ops.json}"
 }
 
-data "aws_iam_policy_document" "AssumeRoleReadOnly" {
+data "aws_iam_policy_document" "assume_role_readonly" {
   statement {
     actions = ["sts:AssumeRole"]
     resources = ["${aws_iam_role.readonly.arn}"]
   }
 }
-resource "aws_iam_policy" "AssumeRoleReadOnly" {
+resource "aws_iam_policy" "assume_role_readonly" {
   name        = "AssumeRoleReadOnly"
-  policy      = "${data.aws_iam_policy_document.AssumeRoleReadOnly.json}"
+  policy      = "${data.aws_iam_policy_document.assume_role_readonly.json}"
 }
 
-data "aws_iam_policy_document" "ManageMFA" {
+data "aws_iam_policy_document" "manage_mfa" {
   statement {
     sid = "AllowUsersToCreateEnableResyncDeleteTheirOwnVirtualMFADevice"
     actions = [
@@ -79,12 +79,12 @@ data "aws_iam_policy_document" "ManageMFA" {
     ]
   }
 }
-resource "aws_iam_policy" "ManageMFA" {
+resource "aws_iam_policy" "manage_mfa" {
   name        = "AllowUsersToDeactivateTheirOwnVirtualMFADevice"
-  policy      = "${data.aws_iam_policy_document.ManageMFA.json}"
+  policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
 }
 
-data "aws_iam_policy_document" "AllowChangePassword" {
+data "aws_iam_policy_document" "allow_change_password" {
   statement {
     actions = ["iam:ChangePassword"]
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
@@ -94,47 +94,47 @@ data "aws_iam_policy_document" "AllowChangePassword" {
     resources = ["*"]
   }
 }
-resource "aws_iam_policy" "AllowChangePassword" {
+resource "aws_iam_policy" "allow_change_password" {
   name        = "AllowChangePassword"
-  policy      = "${data.aws_iam_policy_document.AllowChangePassword.json}"
+  policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
 }
 
 
 resource "aws_iam_group" "ops" {
-  name = "ops"
+  name = "${var.ops_group_name}"
 }
-resource "aws_iam_group_policy_attachment" "AssumeRoleOps" {
+resource "aws_iam_group_policy_attachment" "assume_role_ops" {
   group      = "${aws_iam_group.ops.name}"
-  policy_arn = "${aws_iam_policy.AssumeRoleOps.arn}"
+  policy_arn = "${aws_iam_policy.assume_role_ops.arn}"
 }
-resource "aws_iam_group_policy_attachment" "ManageMFA-ops" {
+resource "aws_iam_group_policy_attachment" "manage_mfa_ops" {
   group      = "${aws_iam_group.ops.name}"
-  policy_arn = "${aws_iam_policy.ManageMFA.arn}"
+  policy_arn = "${aws_iam_policy.manage_mfa.arn}"
 }
-resource "aws_iam_group_policy_attachment" "AllowChagePassword-ops" {
+resource "aws_iam_group_policy_attachment" "allow_chage_password_ops" {
   group      = "${aws_iam_group.ops.name}"
-  policy_arn = "${aws_iam_policy.AllowChangePassword.arn}"
+  policy_arn = "${aws_iam_policy.allow_change_password.arn}"
 }
 
 resource "aws_iam_group" "readonly" {
-  name = "readonly"
+  name = "${var.readonly_group_name}"
 }
-resource "aws_iam_group_policy_attachment" "AssumeRoleReadOnly" {
+resource "aws_iam_group_policy_attachment" "assume_role_readonly" {
   group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.AssumeRoleReadOnly.arn}"
+  policy_arn = "${aws_iam_policy.assume_role_readonly.arn}"
 }
-resource "aws_iam_group_policy_attachment" "ManageMFA-ro" {
+resource "aws_iam_group_policy_attachment" "manage_mfa_readonly" {
   group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.ManageMFA.arn}"
+  policy_arn = "${aws_iam_policy.manage_mfa.arn}"
 }
-resource "aws_iam_group_policy_attachment" "AllowChagePassword-ro" {
+resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.AllowChangePassword.arn}"
+  policy_arn = "${aws_iam_policy.allow_change_password.arn}"
 }
 
 resource "aws_iam_role" "ops" {
-  name = "ops"
-  assume_role_policy = "${data.aws_iam_policy_document.role-trust.json}"
+  name = "${var.ops_role_name}"
+  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
 resource "aws_iam_role_policy_attachment" "ops" {
     role       = "${aws_iam_role.ops.name}"
@@ -142,8 +142,8 @@ resource "aws_iam_role_policy_attachment" "ops" {
 }
 
 resource "aws_iam_role" "readonly" {
-  name = "readonly"
-  assume_role_policy = "${data.aws_iam_policy_document.role-trust.json}"
+  name = "${var.readonly_role_name}"
+  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
 resource "aws_iam_role_policy_attachment" "readonly" {
     role       = "${aws_iam_role.readonly.name}"

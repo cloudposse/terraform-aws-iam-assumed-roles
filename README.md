@@ -27,7 +27,9 @@ resource "aws_iam_user" "Diana" {
 }
 
 module "assumed_roles" {
-  source       = "github.com/cloudposse/tf_assumed_roles"
+  source              = "github.com/cloudposse/tf_assumed_roles"
+  ops_group_name      = "Admins"
+  readonly_group_name = "Watchers"
 }
 
 # Alice will be in 'ops' group with 'AdministratorAcsess'
@@ -50,7 +52,10 @@ resource "aws_iam_group_membership" "ro" {
 
 ### Argument Reference
 
-No arguments used
+- `ops_role_name` - (Optional, default "ops") Name for IAM role with Administrator access
+- `ops_group_name` - (Optional, default "ops") Name for group assuming ops role
+- `readonly_role_name` - (Optional, default "readonly") Name for IAM role with ReadOnly access
+- `readonly_group_name` - (Optional, default "readonly") Name for group assuming readonly IAM role
 
 ### Attributes Reference
 
