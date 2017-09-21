@@ -1,6 +1,6 @@
-# tf_assumed_roles
+# terraform-aws-iam-assumed-roles
 
-Provides two IAM roles and two IAM groups assuming these roles
+Provides two IAM roles and two IAM groups for assuming these roles provided MFA is present.
 
 - role and group named as **ops** has Administratror (full) access to AWS resources
 - role and group named as **readonly** has ReadOnly access to AWS resources
@@ -9,15 +9,15 @@ To give some user Administrator's access just add user to group **ops**
 
 ### Module usage
 
-```
+```hcl
 module "assumed_roles" {
-  source       = "github.com/cloudposse/tf_assumed_roles"
+  source       = "git::https://github.com/cloudposse/tf_assumed_roles.git?ref=master"
 }
 ```
 
 ### Example usage
 
-```
+```hcl
 resource "aws_iam_user" "Alice" {
   name = "Alice"
 }
