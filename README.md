@@ -11,7 +11,7 @@ To give some user Administrator's access just add user to group **ops**
 
 ```hcl
 module "assumed_roles" {
-  source       = "git::https://github.com/cloudposse/tf_assumed_roles.git?ref=master"
+  source       = "git::https://github.com/cloudposse/terraform-aws-iam-assumed-roles.git?ref=master"
 }
 ```
 
@@ -27,7 +27,7 @@ resource "aws_iam_user" "Diana" {
 }
 
 module "assumed_roles" {
-  source              = "github.com/cloudposse/tf_assumed_roles"
+  source              = "github.com/cloudposse/terraform-aws-iam-assumed-roles.git?ref=master"
   admin_group_name    = "Admins"
   readonly_group_name = "Watchers"
 }
