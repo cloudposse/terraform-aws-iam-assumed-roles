@@ -1,4 +1,4 @@
-# Groups output information
+# Group outputs
 #
 output "group_admin_id" {
   value = "${aws_iam_group.admin.id}"
@@ -24,7 +24,7 @@ output "group_readonly_name" {
   value = "${aws_iam_group.readonly.name}"
 }
 
-# Roles output information
+# Role outputs
 #
 output "role_admin_arn" {
   value = "${aws_iam_role.admin.arn}"

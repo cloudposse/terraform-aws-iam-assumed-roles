@@ -1,3 +1,23 @@
+module "admin_label" {
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
+  namespace  = "${var.namespace}"
+  stage      = "${var.stage}"
+  name       = "${var.admin_name}"
+  delimiter  = "${var.delimiter}"
+  attributes = "${var.attributes}"
+  tags       = "${var.tags}"
+}
+
+module "readonly_label" {
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
+  namespace  = "${var.namespace}"
+  stage      = "${var.stage}"
+  name       = "${var.readonly_name}"
+  delimiter  = "${var.delimiter}"
+  attributes = "${var.attributes}"
+  tags       = "${var.tags}"
+}
+
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "role_trust" {
@@ -15,30 +35,6 @@ data "aws_iam_policy_document" "role_trust" {
       values   = ["true"]
     }
   }
-}
-
-data "aws_iam_policy_document" "assume_role_admin" {
-  statement {
-    actions   = ["sts:AssumeRole"]
-    resources = ["${aws_iam_role.admin.arn}"]
-  }
-}
-
-resource "aws_iam_policy" "assume_role_admin" {
-  name   = "AssumeRoleAdmin"
-  policy = "${data.aws_iam_policy_document.assume_role_admin.json}"
-}
-
-data "aws_iam_policy_document" "assume_role_readonly" {
-  statement {
-    actions   = ["sts:AssumeRole"]
-    resources = ["${aws_iam_role.readonly.arn}"]
-  }
-}
-
-resource "aws_iam_policy" "assume_role_readonly" {
-  name   = "AssumeRoleReadOnly"
-  policy = "${data.aws_iam_policy_document.assume_role_readonly.json}"
 }
 
 data "aws_iam_policy_document" "manage_mfa" {
@@ -114,8 +110,28 @@ resource "aws_iam_policy" "allow_change_password" {
   policy = "${data.aws_iam_policy_document.allow_change_password.json}"
 }
 
+# Admin config
+
+data "aws_iam_policy_document" "assume_role_admin" {
+  statement {
+    actions   = ["sts:AssumeRole"]
+    resources = ["${aws_iam_role.admin.arn}"]
+  }
+}
+
+resource "aws_iam_policy" "assume_role_admin" {
+  name        = "${module.admin_label.id}"
+  description = "Assume admin role"
+  policy      = "${data.aws_iam_policy_document.assume_role_admin.json}"
+}
+
 resource "aws_iam_group" "admin" {
-  name = "${var.admin_group_name}"
+  name = "${module.admin_label.id}"
+}
+
+resource "aws_iam_role" "admin" {
+  name               = "${module.admin_label.id}"
+  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
 
 resource "aws_iam_group_policy_attachment" "assume_role_admin" {
@@ -133,8 +149,33 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
   policy_arn = "${aws_iam_policy.allow_change_password.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "admin" {
+  role       = "${aws_iam_role.admin.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+# Readonly config
+
+data "aws_iam_policy_document" "assume_role_readonly" {
+  statement {
+    actions   = ["sts:AssumeRole"]
+    resources = ["${aws_iam_role.readonly.arn}"]
+  }
+}
+
+resource "aws_iam_policy" "assume_role_readonly" {
+  name        = "${module.readonly_label.id}"
+  description = "Assume readonly role"
+  policy      = "${data.aws_iam_policy_document.assume_role_readonly.json}"
+}
+
 resource "aws_iam_group" "readonly" {
-  name = "${var.readonly_group_name}"
+  name = "${module.readonly_label.id}"
+}
+
+resource "aws_iam_role" "readonly" {
+  name               = "${module.readonly_label.id}"
+  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
 
 resource "aws_iam_group_policy_attachment" "assume_role_readonly" {
@@ -150,21 +191,6 @@ resource "aws_iam_group_policy_attachment" "manage_mfa_readonly" {
 resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   group      = "${aws_iam_group.readonly.name}"
   policy_arn = "${aws_iam_policy.allow_change_password.arn}"
-}
-
-resource "aws_iam_role" "admin" {
-  name               = "${var.admin_role_name}"
-  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
-}
-
-resource "aws_iam_role_policy_attachment" "admin" {
-  role       = "${aws_iam_role.admin.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
-
-resource "aws_iam_role" "readonly" {
-  name               = "${var.readonly_role_name}"
-  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "readonly" {
