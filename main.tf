@@ -88,11 +88,6 @@ data "aws_iam_policy_document" "manage_mfa" {
   }
 }
 
-resource "aws_iam_policy" "manage_mfa" {
-  name   = "AllowUsersToDeactivateTheirOwnVirtualMFADevice"
-  policy = "${data.aws_iam_policy_document.manage_mfa.json}"
-}
-
 data "aws_iam_policy_document" "allow_change_password" {
   statement {
     actions   = ["iam:ChangePassword"]
@@ -105,12 +100,19 @@ data "aws_iam_policy_document" "allow_change_password" {
   }
 }
 
-resource "aws_iam_policy" "allow_change_password" {
-  name   = "AllowChangePassword"
-  policy = "${data.aws_iam_policy_document.allow_change_password.json}"
+# Admin config
+
+resource "aws_iam_policy" "manage_mfa_admin" {
+  name        = "${module.admin_label.id}${var.delimiter}AllowUsersToDeactivateTheirOwnVirtualMFADevice"
+  description = "Allow admin users to manage Virtual MFA Devices"
+  policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
 }
 
-# Admin config
+resource "aws_iam_policy" "allow_change_password_admin" {
+  name        = "${module.admin_label.id}${var.delimiter}AllowChangePassword"
+  description = "Allow admin users to change password"
+  policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
+}
 
 data "aws_iam_policy_document" "assume_role_admin" {
   statement {
@@ -120,8 +122,8 @@ data "aws_iam_policy_document" "assume_role_admin" {
 }
 
 resource "aws_iam_policy" "assume_role_admin" {
-  name        = "${module.admin_label.id}"
-  description = "Assume admin role"
+  name        = "${module.admin_label.id}${var.delimiter}AssumeRole"
+  description = "Allow assuming admin role"
   policy      = "${data.aws_iam_policy_document.assume_role_admin.json}"
 }
 
@@ -141,12 +143,12 @@ resource "aws_iam_group_policy_attachment" "assume_role_admin" {
 
 resource "aws_iam_group_policy_attachment" "manage_mfa_admin" {
   group      = "${aws_iam_group.admin.name}"
-  policy_arn = "${aws_iam_policy.manage_mfa.arn}"
+  policy_arn = "${aws_iam_policy.manage_mfa_admin.arn}"
 }
 
 resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
   group      = "${aws_iam_group.admin.name}"
-  policy_arn = "${aws_iam_policy.allow_change_password.arn}"
+  policy_arn = "${aws_iam_policy.allow_change_password_admin.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "admin" {
@@ -156,6 +158,18 @@ resource "aws_iam_role_policy_attachment" "admin" {
 
 # Readonly config
 
+resource "aws_iam_policy" "manage_mfa_readonly" {
+  name        = "${module.readonly_label.id}${var.delimiter}AllowUsersToDeactivateTheirOwnVirtualMFADevice"
+  description = "Allow readonly users to manage Virtual MFA Devices"
+  policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
+}
+
+resource "aws_iam_policy" "allow_change_password_readonly" {
+  name        = "${module.readonly_label.id}${var.delimiter}AllowChangePassword"
+  description = "Allow readonly users to change password"
+  policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
+}
+
 data "aws_iam_policy_document" "assume_role_readonly" {
   statement {
     actions   = ["sts:AssumeRole"]
@@ -164,8 +178,8 @@ data "aws_iam_policy_document" "assume_role_readonly" {
 }
 
 resource "aws_iam_policy" "assume_role_readonly" {
-  name        = "${module.readonly_label.id}"
-  description = "Assume readonly role"
+  name        = "${module.readonly_label.id}${var.delimiter}AssumeRole"
+  description = "Allow assuming readonly role"
   policy      = "${data.aws_iam_policy_document.assume_role_readonly.json}"
 }
 
@@ -185,12 +199,12 @@ resource "aws_iam_group_policy_attachment" "assume_role_readonly" {
 
 resource "aws_iam_group_policy_attachment" "manage_mfa_readonly" {
   group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.manage_mfa.arn}"
+  policy_arn = "${aws_iam_policy.manage_mfa_readonly.arn}"
 }
 
 resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.allow_change_password.arn}"
+  policy_arn = "${aws_iam_policy.allow_change_password_readonly.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "readonly" {
