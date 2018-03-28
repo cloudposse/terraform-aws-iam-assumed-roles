@@ -22,7 +22,6 @@ module "assumed_roles" {
 }
 ```
 
-
 ## Variables
 
 |  Name              |  Default           |  Description                                                                    | Required |
