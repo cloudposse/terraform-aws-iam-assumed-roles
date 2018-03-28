@@ -6,6 +6,7 @@ Terraform module to provision two IAM roles and two IAM groups for assuming the 
 - Role and group with ReadOnly access to AWS resources
 
 To give a user administrator's access, add the user to the Administrator group.
+
 To give a user readonly access, add the user to the ReadOnly group.
 
 
