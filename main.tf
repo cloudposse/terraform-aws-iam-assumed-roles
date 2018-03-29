@@ -122,7 +122,7 @@ data "aws_iam_policy_document" "assume_role_admin" {
 }
 
 resource "aws_iam_policy" "assume_role_admin" {
-  name        = "${module.admin_label.id}-assume-role"
+  name        = "${module.admin_label.id}-alow-assume-role"
   description = "Allow assuming admin role"
   policy      = "${data.aws_iam_policy_document.assume_role_admin.json}"
 }
@@ -178,7 +178,7 @@ data "aws_iam_policy_document" "assume_role_readonly" {
 }
 
 resource "aws_iam_policy" "assume_role_readonly" {
-  name        = "${module.readonly_label.id}-assume-role"
+  name        = "${module.readonly_label.id}-alow-assume-role"
   description = "Allow assuming readonly role"
   policy      = "${data.aws_iam_policy_document.assume_role_readonly.json}"
 }
