@@ -103,13 +103,13 @@ data "aws_iam_policy_document" "allow_change_password" {
 # Admin config
 
 resource "aws_iam_policy" "manage_mfa_admin" {
-  name        = "${module.admin_label.id}-allow-manage-mfa"
+  name        = "${module.admin_label.id}-permit-mfa"
   description = "Allow admin users to manage Virtual MFA Devices"
   policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
 }
 
 resource "aws_iam_policy" "allow_change_password_admin" {
-  name        = "${module.admin_label.id}-allow-change-password"
+  name        = "${module.admin_label.id}-permit-change-password"
   description = "Allow admin users to change password"
   policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
 }
@@ -122,7 +122,7 @@ data "aws_iam_policy_document" "assume_role_admin" {
 }
 
 resource "aws_iam_policy" "assume_role_admin" {
-  name        = "${module.admin_label.id}-alow-assume-role"
+  name        = "${module.admin_label.id}-permit-assume-role"
   description = "Allow assuming admin role"
   policy      = "${data.aws_iam_policy_document.assume_role_admin.json}"
 }
@@ -159,13 +159,13 @@ resource "aws_iam_role_policy_attachment" "admin" {
 # Readonly config
 
 resource "aws_iam_policy" "manage_mfa_readonly" {
-  name        = "${module.readonly_label.id}-allow-manage-mfa"
+  name        = "${module.readonly_label.id}-permit-mfa"
   description = "Allow readonly users to manage Virtual MFA Devices"
   policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
 }
 
 resource "aws_iam_policy" "allow_change_password_readonly" {
-  name        = "${module.readonly_label.id}-allow-change-password"
+  name        = "${module.readonly_label.id}-permit-change-password"
   description = "Allow readonly users to change password"
   policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
 }
@@ -178,7 +178,7 @@ data "aws_iam_policy_document" "assume_role_readonly" {
 }
 
 resource "aws_iam_policy" "assume_role_readonly" {
-  name        = "${module.readonly_label.id}-alow-assume-role"
+  name        = "${module.readonly_label.id}-permit-assume-role"
   description = "Allow assuming readonly role"
   policy      = "${data.aws_iam_policy_document.assume_role_readonly.json}"
 }
