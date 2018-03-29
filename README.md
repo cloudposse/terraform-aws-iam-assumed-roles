@@ -1,6 +1,7 @@
 # terraform-aws-iam-assumed-roles [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-iam-assumed-roles.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-iam-assumed-roles)
 
-Terraform module to provision two IAM roles and two IAM groups for assuming the roles provided MFA is present.
+Terraform module to provision two IAM roles and two IAM groups for assuming the roles provided MFA is present,
+and add IAM users to the groups.
 
 - Role and group with Administrator (full) access to AWS resources
 - Role and group with ReadOnly access to AWS resources
@@ -14,25 +15,29 @@ To give a user readonly access, add the user to the ReadOnly group.
 
 ```hcl
 module "assumed_roles" {
-  source        = "git::https://github.com/cloudposse/terraform-aws-iam-assumed-roles.git?ref=master"
-  namespace     = "cp"
-  stage         = "prod"
-  admin_name    = "admin"
-  readonly_name = "readonly"
+  source              = "git::https://github.com/cloudposse/terraform-aws-iam-assumed-roles.git?ref=master"
+  namespace           = "cp"
+  stage               = "prod"
+  admin_name          = "admin"
+  readonly_name       = "readonly"
+  admin_user_names    = ["User1","User2"] # Add these IAM users to the admin group
+  readonly_user_names = ["User3","User4"] # Add these IAM users to the readonly group
 }
 ```
 
 ## Variables
 
-|  Name              |  Default           |  Description                                                                    | Required |
-|:-------------------|:-------------------|:--------------------------------------------------------------------------------|:--------:|
-| `namespace`        | ``                 | Namespace (_e.g._ `cp` or `cloudposse`)                                         | Yes      |
-| `stage`            | ``                 | Stage (_e.g._ `prod`, `dev`, `staging`)                                         | Yes      |
-| `admin_name`       | `admin`            | Name for the admin group and role                                               | Yes      |
-| `readonly_name`    | `readonly`         | Name for the readonly group and role                                            | Yes      |
-| `attributes`       | `[]`               | Additional attributes (_e.g._ `policy` or `role`)                               | No       |
-| `tags`             | `{}`               | Additional tags (_e.g._ `map("BusinessUnit","XYZ")`                             | No       |
-| `delimiter`        | `-`                | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes`     | No       |
+|  Name                  |  Default       |  Description                                                                    | Required |
+|:-----------------------|:---------------|:--------------------------------------------------------------------------------|:--------:|
+| `namespace`            | ``             | Namespace (_e.g._ `cp` or `cloudposse`)                                         | Yes      |
+| `stage`                | ``             | Stage (_e.g._ `prod`, `dev`, `staging`)                                         | Yes      |
+| `admin_name`           | `admin`        | Name for the admin group and role                                               | Yes      |
+| `readonly_name`        | `readonly`     | Name for the readonly group and role                                            | Yes      |
+| `admin_user_names`     | `[]`           | Optional list of IAM user names to add to the admin group                       | No       |
+| `readonly_user_names`  | `[]`           | Optional list of IAM user names to add to the readonly group                    | No       |
+| `attributes`           | `[]`           | Additional attributes (_e.g._ `policy` or `role`)                               | No       |
+| `tags`                 | `{}`           | Additional tags (_e.g._ `map("BusinessUnit","XYZ")`                             | No       |
+| `delimiter`            | `-`            | Delimiter to be used between `namespace`, `stage`, `name`, and `attributes`     | No       |
 
 
 ## Outputs

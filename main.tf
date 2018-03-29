@@ -156,6 +156,13 @@ resource "aws_iam_role_policy_attachment" "admin" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
+resource "aws_iam_group_membership" "admin" {
+  count = "${length(var.admin_user_names) > 0 ? 1 : 0}"
+  name  = "${module.admin_label.id}"
+  group = "${aws_iam_group.admin.id}"
+  users = ["${var.admin_user_names}"]
+}
+
 # Readonly config
 
 resource "aws_iam_policy" "manage_mfa_readonly" {
@@ -210,4 +217,11 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
 resource "aws_iam_role_policy_attachment" "readonly" {
   role       = "${aws_iam_role.readonly.name}"
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+resource "aws_iam_group_membership" "readonly" {
+  count = "${length(var.readonly_user_names) > 0 ? 1 : 0}"
+  name  = "${module.readonly_label.id}"
+  group = "${aws_iam_group.readonly.id}"
+  users = ["${var.readonly_user_names}"]
 }
