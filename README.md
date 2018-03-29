@@ -4,11 +4,11 @@ Terraform module to provision two IAM roles and two IAM groups for assuming the 
 and add IAM users to the groups.
 
 - Role and group with Administrator (full) access to AWS resources
-- Role and group with ReadOnly access to AWS resources
+- Role and group with Readonly access to AWS resources
 
-To give a user administrator's access, add the user to the Administrator group.
+To give a user administrator's access, add the user to the admin group.
 
-To give a user readonly access, add the user to the ReadOnly group.
+To give a user readonly access, add the user to the readonly group.
 
 
 ## Usage
@@ -42,18 +42,18 @@ module "assumed_roles" {
 
 ## Outputs
 
-| Name                     | Description                  |
-|:-------------------------|:-----------------------------|
-| `group_admin_id`         | Administrator group ID       |
-| `group_admin_arn`        | Administrator group ARN      |
-| `group_admin_name`       | Administrator group name     |
-| `group_readonly_id`      | ReadOnly group ID            |
-| `group_readonly_arn`     | ReadOnly group ARN           |
-| `group_readonly_name`    | ReadOnly group name          |
-| `role_admin_arn`         | Administrator role ARN       |
-| `role_admin_name`        | Administrator role name      |
-| `role_readonly_arn`      | ReadOnly role ARN            |
-| `role_readonly_name`     | ReadOnly role name           |
+| Name                     | Description          |
+|:-------------------------|:---------------------|
+| `group_admin_id`         | Admin group ID       |
+| `group_admin_arn`        | Admin group ARN      |
+| `group_admin_name`       | Admin group name     |
+| `group_readonly_id`      | Readonly group ID    |
+| `group_readonly_arn`     | Readonly group ARN   |
+| `group_readonly_name`    | Readonly group name  |
+| `role_admin_arn`         | Admin role ARN       |
+| `role_admin_name`        | Admin role name      |
+| `role_readonly_arn`      | Readonly role ARN    |
+| `role_readonly_name`     | Readonly role name   |
 
 
 ## Help
