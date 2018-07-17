@@ -1,0 +1,83 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: terraform-aws-iam-assumed-roles
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/terraform-aws-iam-assumed-roles
+
+# Badges to display
+badges:
+  - name: "Build Status"
+    image: "https://travis-ci.org/cloudposse/terraform-aws-iam-assumed-roles.svg?branch=master"
+    url: "https://travis-ci.org/cloudposse/terraform-aws-iam-assumed-roles"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-iam-assumed-roles.svg"
+    url: "https://github.com/cloudposse/terraform-aws-iam-assumed-roles/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related:
+  - name: "terraform-aws-iam-system-user"
+    description: "Terraform Module to Provision a Basic IAM System User Suitable for CI/CD Systems (E.g. TravisCI, CircleCI)"
+    url: "https://github.com/cloudposse/terraform-aws-iam-system-user"
+  - name: "terraform-aws-iam-chamber-user"
+    description: "Terraform module to provision a basic IAM chamber user with access to SSM parameters and KMS key to decrypt secrets, suitable for CI/CD systems (e.g. TravisCI, CircleCI, CodeFresh) or systems which are external to AWS that cannot leverage AWS IAM Instance Profiles"
+    url: "https://github.com/cloudposse/terraform-aws-iam-chamber-user"
+  - name: "terraform-aws-ssm-iam-role"
+    description: "Terraform module to provision an IAM role with configurable permissions to access SSM Parameter Store"
+    url: "https://github.com/cloudposse/terraform-aws-ssm-iam-role"
+  - name: "terraform-aws-iam-s3-user"
+    description: "Terraform module to provision a basic IAM user with permissions to access S3 resources, e.g. to give the user read/write/delete access to the objects in an S3 bucket"
+    url: "https://github.com/cloudposse/terraform-aws-iam-s3-user"
+  - name: "terraform-aws-lb-s3-bucket"
+    description: "Terraform module to provision an S3 bucket with built in IAM policy to allow AWS Load Balancers to ship access logs"
+    url: "https://github.com/cloudposse/terraform-aws-lb-s3-bucket"
+
+# Short description of this project
+description: |-
+  Terraform module to provision two IAM roles and two IAM groups for assuming the roles provided MFA is present,
+  and add IAM users to the groups.
+
+  - Role and group with Administrator (full) access to AWS resources
+  - Role and group with Readonly access to AWS resources
+
+  To give a user administrator's access, add the user to the admin group.
+
+  To give a user readonly access, add the user to the readonly group.
+
+
+# How to use this project
+usage: |-
+  ```hcl
+  module "assumed_roles" {
+    source              = "git::https://github.com/cloudposse/terraform-aws-iam-assumed-roles.git?ref=master"
+    namespace           = "cp"
+    stage               = "prod"
+    admin_name          = "admin"
+    readonly_name       = "readonly"
+    admin_user_names    = ["User1","User2"] # Add these IAM users to the admin group
+    readonly_user_names = ["User3","User4"] # Add these IAM users to the readonly group
+  }
+  ```
+include:
+  - "docs/targets.md"
+  - "docs/terraform.md"
+
+# Contributors to this project
+contributors:
+  - name: "Erik Osterman"
+    github: "osterman"
+  - name: "Andriy Knysh"
+    github: "aknysh"
