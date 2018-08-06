@@ -1,3 +1,9 @@
+provider "aws" {}
+
+provider "aws" {
+  alias = "sub"
+}
+
 module "admin_label" {
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
   namespace  = "${var.namespace}"
@@ -132,6 +138,7 @@ resource "aws_iam_group" "admin" {
 }
 
 resource "aws_iam_role" "admin" {
+  provider           = "${var.use_sub_provider ? aws.sub : aws}"
   name               = "${module.admin_label.id}"
   assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }
@@ -195,6 +202,7 @@ resource "aws_iam_group" "readonly" {
 }
 
 resource "aws_iam_role" "readonly" {
+  provider           = "${var.use_sub_provider ? aws.sub : aws}"
   name               = "${module.readonly_label.id}"
   assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
 }

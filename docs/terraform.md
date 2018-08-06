@@ -12,6 +12,7 @@
 | readonly_user_names | Optional list of IAM user names to add to the readonly group | list | `<list>` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | string | - | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
+| use_sub_provider | Whether or not to use the aws.sub provider when creating roles | string | `false` | no |
 
 ## Outputs
 

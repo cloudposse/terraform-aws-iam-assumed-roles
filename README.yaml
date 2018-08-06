@@ -66,6 +66,10 @@ usage: |-
   ```hcl
   module "assumed_roles" {
     source              = "git::https://github.com/cloudposse/terraform-aws-iam-assumed-roles.git?ref=master"
+    providers           = {
+      aws     = "aws"
+      aws.sub = "aws.prod"
+    }
     namespace           = "cp"
     stage               = "prod"
     admin_name          = "admin"

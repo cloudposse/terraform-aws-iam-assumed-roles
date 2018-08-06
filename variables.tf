@@ -49,3 +49,9 @@ variable "readonly_user_names" {
   default     = []
   description = "Optional list of IAM user names to add to the readonly group"
 }
+
+variable "use_sub_provider" {
+  type        = "string"
+  default     = false
+  description = "Whether or not to use the aws.sub provider when creating roles"
+}
