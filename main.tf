@@ -102,14 +102,15 @@ data "aws_iam_policy_document" "allow_change_password" {
 
 data "aws_iam_policy_document" "allow_manage_access_keys" {
   statement {
-    actions   = [
+    actions = [
       "iam:DeleteAccessKey",
       "iam:GetAccessKeyLastUsed",
       "iam:UpdateAccessKey",
       "iam:GetUser",
       "iam:CreateAccessKey",
-      "iam:ListAccessKeys"
+      "iam:ListAccessKeys",
     ]
+
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
   }
 
@@ -118,7 +119,6 @@ data "aws_iam_policy_document" "allow_manage_access_keys" {
     resources = ["*"]
   }
 }
-
 
 # Admin config
 
