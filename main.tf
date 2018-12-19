@@ -100,6 +100,26 @@ data "aws_iam_policy_document" "allow_change_password" {
   }
 }
 
+data "aws_iam_policy_document" "allow_manage_access_keys" {
+  statement {
+    actions   = [
+      "iam:DeleteAccessKey",
+      "iam:GetAccessKeyLastUsed",
+      "iam:UpdateAccessKey",
+      "iam:GetUser",
+      "iam:CreateAccessKey",
+      "iam:ListAccessKeys"
+    ]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
+  }
+
+  statement {
+    actions   = ["iam:ListUsers"]
+    resources = ["*"]
+  }
+}
+
+
 # Admin config
 
 resource "aws_iam_policy" "manage_mfa_admin" {
@@ -112,6 +132,12 @@ resource "aws_iam_policy" "allow_change_password_admin" {
   name        = "${module.admin_label.id}-permit-change-password"
   description = "Allow admin users to change password"
   policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
+}
+
+resource "aws_iam_policy" "allow_manage_access_keys_admin" {
+  name        = "${module.admin_label.id}-permit-manage-keys"
+  description = "Allow admin users to manage own access keys"
+  policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_admin" {
@@ -175,6 +201,12 @@ resource "aws_iam_policy" "allow_change_password_readonly" {
   name        = "${module.readonly_label.id}-permit-change-password"
   description = "Allow readonly users to change password"
   policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
+}
+
+resource "aws_iam_policy" "allow_manage_access_keys_readonly" {
+  name        = "${module.readonly_label.id}-permit-manage-keys"
+  description = "Allow readonly users to manage own access keys"
+  policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_readonly" {
