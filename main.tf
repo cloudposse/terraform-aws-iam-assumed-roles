@@ -177,6 +177,11 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
   policy_arn = "${aws_iam_policy.allow_change_password_admin.arn}"
 }
 
+resource "aws_iam_group_policy_attachment" "manage_access_key_admin" {
+  group      = "${aws_iam_group.admin.name}"
+  policy_arn = "${aws_iam_policy.allow_manage_access_keys_admin.arn}"
+}
+
 resource "aws_iam_role_policy_attachment" "admin" {
   role       = "${aws_iam_role.admin.name}"
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -244,6 +249,11 @@ resource "aws_iam_group_policy_attachment" "manage_mfa_readonly" {
 resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   group      = "${aws_iam_group.readonly.name}"
   policy_arn = "${aws_iam_policy.allow_change_password_readonly.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "manage_access_key_readonly" {
+  group      = "${aws_iam_group.readonly.name}"
+  policy_arn = "${aws_iam_policy.allow_manage_access_keys_readonly.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "readonly" {
