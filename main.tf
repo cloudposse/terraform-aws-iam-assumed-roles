@@ -90,7 +90,10 @@ data "aws_iam_policy_document" "manage_mfa" {
 
 data "aws_iam_policy_document" "allow_change_password" {
   statement {
-    actions   = ["iam:ChangePassword"]
+    actions   = [
+      "iam:ChangePassword",
+      "iam:GetLoginProfile"
+    ]
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
   }
 
