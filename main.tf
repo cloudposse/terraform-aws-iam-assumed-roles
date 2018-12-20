@@ -140,7 +140,7 @@ resource "aws_iam_policy" "allow_change_password_admin" {
 
 resource "aws_iam_policy" "allow_manage_access_keys_admin" {
   name        = "${module.admin_label.id}-permit-manage-keys"
-  description = "Allow admin users to manage own access keys"
+  description = "Allow admin users to manage their own access keys"
   policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
 }
 
@@ -214,7 +214,7 @@ resource "aws_iam_policy" "allow_change_password_readonly" {
 
 resource "aws_iam_policy" "allow_manage_access_keys_readonly" {
   name        = "${module.readonly_label.id}-permit-manage-keys"
-  description = "Allow readonly users to manage own access keys"
+  description = "Allow readonly users to manage their own access keys"
   policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
 }
 
