@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "allow_change_password" {
   }
 }
 
-data "aws_iam_policy_document" "allow_manage_access_keys" {
+data "aws_iam_policy_document" "allow_key_management" {
   statement {
     actions = [
       "iam:DeleteAccessKey",
@@ -138,10 +138,10 @@ resource "aws_iam_policy" "allow_change_password_admin" {
   policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
 }
 
-resource "aws_iam_policy" "allow_manage_access_keys_admin" {
-  name        = "${module.admin_label.id}-permit-manage-keys"
+resource "aws_iam_policy" "allow_key_management_admin" {
+  name        = "${module.admin_label.id}-allow-key-management"
   description = "Allow admin users to manage own access keys"
-  policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
+  policy      = "${data.aws_iam_policy_document.allow_key_management.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_admin" {
@@ -181,9 +181,9 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
   policy_arn = "${aws_iam_policy.allow_change_password_admin.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "manage_access_key_admin" {
+resource "aws_iam_group_policy_attachment" "key_management_admin" {
   group      = "${aws_iam_group.admin.name}"
-  policy_arn = "${aws_iam_policy.allow_manage_access_keys_admin.arn}"
+  policy_arn = "${aws_iam_policy.allow_key_management_admin.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "admin" {
@@ -212,10 +212,10 @@ resource "aws_iam_policy" "allow_change_password_readonly" {
   policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
 }
 
-resource "aws_iam_policy" "allow_manage_access_keys_readonly" {
+resource "aws_iam_policy" "allow_key_management_readonly" {
   name        = "${module.readonly_label.id}-permit-manage-keys"
   description = "Allow readonly users to manage own access keys"
-  policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
+  policy      = "${data.aws_iam_policy_document.allow_key_management.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_readonly" {
@@ -255,9 +255,9 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   policy_arn = "${aws_iam_policy.allow_change_password_readonly.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "manage_access_key_readonly" {
+resource "aws_iam_group_policy_attachment" "key_management_readonly" {
   group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.allow_manage_access_keys_readonly.arn}"
+  policy_arn = "${aws_iam_policy.allow_key_management_readonly.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "readonly" {
