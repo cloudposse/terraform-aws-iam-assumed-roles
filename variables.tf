@@ -5,7 +5,7 @@ variable "namespace" {
 
 variable "enabled" {
   type        = "string"
-  description = "Whether to create these resources"
+  description = "Set to false to prevent the module from creating any resources"
   default     = "true"
 }
 
