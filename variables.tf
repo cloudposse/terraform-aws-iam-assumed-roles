@@ -3,6 +3,12 @@ variable "namespace" {
   description = "Namespace (e.g. `cp` or `cloudposse`)"
 }
 
+variable "enabled" {
+  type        = "string"
+  description = "Whether to create these resources"
+  default     = "true"
+}
+
 variable "stage" {
   type        = "string"
   description = "Stage (e.g. `prod`, `dev`, `staging`)"
