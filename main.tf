@@ -214,8 +214,13 @@ resource "aws_iam_policy" "allow_change_password_readonly" {
 
 resource "aws_iam_policy" "allow_key_management_readonly" {
   name        = "${module.readonly_label.id}-permit-manage-keys"
+<<<<<<< HEAD
   description = "Allow readonly users to manage own access keys"
   policy      = "${data.aws_iam_policy_document.allow_key_management.json}"
+=======
+  description = "Allow readonly users to manage their own access keys"
+  policy      = "${data.aws_iam_policy_document.allow_manage_access_keys.json}"
+>>>>>>> 1f61fcffc82223c0105f9f5901c8001ae4cdeb76
 }
 
 data "aws_iam_policy_document" "assume_role_readonly" {
