@@ -92,7 +92,6 @@ data "aws_iam_policy_document" "allow_change_password" {
   statement {
     actions = [
       "iam:ChangePassword",
-      "iam:GetLoginProfile",
     ]
 
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
@@ -181,15 +180,16 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
   policy_arn = "${aws_iam_policy.allow_change_password_admin.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "key_management_admin" {
-  group      = "${aws_iam_group.admin.name}"
-  policy_arn = "${aws_iam_policy.allow_key_management_admin.arn}"
-}
-
 resource "aws_iam_role_policy_attachment" "admin" {
   role       = "${aws_iam_role.admin.name}"
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
+
+resource "aws_iam_role_policy_attachment" "key_management_admin" {
+  role      = "${aws_iam_group.admin.name}"
+  policy_arn = "${aws_iam_policy.allow_key_management_admin.arn}"
+}
+
 
 resource "aws_iam_group_membership" "admin" {
   count = "${length(var.admin_user_names) > 0 ? 1 : 0}"
@@ -255,14 +255,14 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   policy_arn = "${aws_iam_policy.allow_change_password_readonly.arn}"
 }
 
-resource "aws_iam_group_policy_attachment" "key_management_readonly" {
-  group      = "${aws_iam_group.readonly.name}"
-  policy_arn = "${aws_iam_policy.allow_key_management_readonly.arn}"
-}
-
 resource "aws_iam_role_policy_attachment" "readonly" {
   role       = "${aws_iam_role.readonly.name}"
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "key_management_readonly" {
+  role      = "${aws_iam_role.readonly.name}"
+  policy_arn = "${aws_iam_policy.allow_key_management_readonly.arn}"
 }
 
 resource "aws_iam_group_membership" "readonly" {
