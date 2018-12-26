@@ -96,13 +96,47 @@ data "aws_iam_policy_document" "allow_change_password" {
   count = "${local.enabled ? 1 : 0}"
 
   statement {
-    actions   = ["iam:ChangePassword"]
+    actions = ["iam:ChangePassword"]
+
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
   }
 
   statement {
     actions   = ["iam:GetAccountPasswordPolicy"]
     resources = ["*"]
+  }
+
+  statement {
+    actions = ["iam:GetLoginProfile"]
+
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "allow_key_management" {
+  statement {
+    actions = [
+      "iam:DeleteAccessKey",
+      "iam:GetAccessKeyLastUsed",
+      "iam:UpdateAccessKey",
+      "iam:GetUser",
+      "iam:CreateAccessKey",
+      "iam:ListAccessKeys",
+    ]
+
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
   }
 }
 
@@ -126,6 +160,12 @@ resource "aws_iam_policy" "allow_change_password_admin" {
   name        = "${module.admin_label.id}-permit-change-password"
   description = "Allow admin users to change password"
   policy      = "${join("", data.aws_iam_policy_document.allow_change_password.*.json)}"
+}
+
+resource "aws_iam_policy" "allow_key_management_admin" {
+  name        = "${module.admin_label.id}-allow-key-management"
+  description = "Allow admin users to manage their own access keys"
+  policy      = "${data.aws_iam_policy_document.allow_key_management.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_admin" {
@@ -173,6 +213,11 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
   policy_arn = "${join("", aws_iam_policy.allow_change_password_admin.*.arn)}"
 }
 
+resource "aws_iam_group_policy_attachment" "key_management_admin" {
+  group      = "${aws_iam_group.admin.name}"
+  policy_arn = "${aws_iam_policy.allow_key_management_admin.arn}"
+}
+
 resource "aws_iam_role_policy_attachment" "admin" {
   count      = "${local.enabled ? 1 : 0}"
   role       = "${join("", aws_iam_role.admin.*.name)}"
@@ -200,6 +245,12 @@ resource "aws_iam_policy" "allow_change_password_readonly" {
   name        = "${module.readonly_label.id}-permit-change-password"
   description = "Allow readonly users to change password"
   policy      = "${join("", data.aws_iam_policy_document.allow_change_password.*.json)}"
+}
+
+resource "aws_iam_policy" "allow_key_management_readonly" {
+  name        = "${module.readonly_label.id}-permit-manage-keys"
+  description = "Allow readonly users to manage their own access keys"
+  policy      = "${data.aws_iam_policy_document.allow_key_management.json}"
 }
 
 data "aws_iam_policy_document" "assume_role_readonly" {
@@ -243,6 +294,11 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
   count      = "${local.enabled ? 1 : 0}"
   group      = "${join("", aws_iam_group.readonly.*.name)}"
   policy_arn = "${join("", aws_iam_policy.allow_change_password_readonly.*.arn)}"
+}
+
+resource "aws_iam_group_policy_attachment" "key_management_readonly" {
+  group      = "${aws_iam_group.readonly.name}"
+  policy_arn = "${aws_iam_policy.allow_key_management_readonly.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "readonly" {
