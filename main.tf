@@ -43,13 +43,12 @@ data "aws_iam_policy_document" "manage_mfa" {
   count = "${local.enabled ? 1 : 0}"
 
   statement {
-    sid = "AllowUsersToCreateEnableResyncDeleteTheirOwnVirtualMFADevice"
+    sid = "AllowUsersToCreateEnableResyncTheirOwnVirtualMFADevice"
 
     actions = [
       "iam:CreateVirtualMFADevice",
       "iam:EnableMFADevice",
       "iam:ResyncMFADevice",
-      "iam:DeleteVirtualMFADevice",
     ]
 
     resources = [
@@ -63,6 +62,25 @@ data "aws_iam_policy_document" "manage_mfa" {
 
     actions = [
       "iam:DeactivateMFADevice",
+    ]
+
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/&{aws:username}",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+  }
+
+  statement {
+    sid = "AllowUsersToDeleteTheirOwnVirtualMFADevice"
+
+    actions = [
+      "iam:DeleteVirtualMFADevice",
     ]
 
     resources = [
