@@ -90,6 +90,7 @@ Available targets:
 | readonly_name | Name for the readonly group and role (e.g. `readonly`) | string | `readonly` | no |
 | readonly_user_names | Optional list of IAM user names to add to the readonly group | list | `<list>` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | string | - | yes |
+| switchrole_url | URL to the IAM console to switch to a role | string | `https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
 
 ## Outputs
@@ -106,6 +107,8 @@ Available targets:
 | role_admin_name | Admin role name |
 | role_readonly_arn | Readonly role ARN |
 | role_readonly_name | Readonly role name |
+| switchrole_admin_url | URL to the IAM console to switch to the admin role |
+| switchrole_readonly_url | URL to the IAM console to switch to the readonly role |
 
 
 
@@ -192,7 +195,7 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
 ## Copyright
 
-Copyright © 2017-2018 [Cloud Posse, LLC](https://cpco.io/copyright)
+Copyright © 2017-2019 [Cloud Posse, LLC](https://cpco.io/copyright)
 
 
 

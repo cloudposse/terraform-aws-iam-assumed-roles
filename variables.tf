@@ -55,3 +55,9 @@ variable "readonly_user_names" {
   default     = []
   description = "Optional list of IAM user names to add to the readonly group"
 }
+
+variable "switchrole_url" {
+  type        = "string"
+  description = "URL to the IAM console to switch to a role"
+  default     = "https://signin.aws.amazon.com/switchrole?account=%s&roleName=%s&displayName=%s"
+}

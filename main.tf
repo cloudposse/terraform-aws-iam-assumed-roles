@@ -331,3 +331,8 @@ resource "aws_iam_group_membership" "readonly" {
   group = "${join("", aws_iam_group.readonly.*.id)}"
   users = ["${var.readonly_user_names}"]
 }
+
+locals {
+  role_readonly_name = "${join("", aws_iam_role.readonly.*.name)}"
+  role_admin_name    = "${join("", aws_iam_role.admin.*.name)}"
+}

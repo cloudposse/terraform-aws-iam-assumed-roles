@@ -1,3 +1,4 @@
+#
 # Group outputs
 #
 output "group_admin_id" {
@@ -30,6 +31,7 @@ output "group_readonly_name" {
   description = "Readonly group name"
 }
 
+#
 # Role outputs
 #
 output "role_admin_arn" {
@@ -38,7 +40,7 @@ output "role_admin_arn" {
 }
 
 output "role_admin_name" {
-  value       = "${join("", aws_iam_role.admin.*.name)}"
+  value       = "${local.role_admin_name}"
   description = "Admin role name"
 }
 
@@ -48,6 +50,16 @@ output "role_readonly_arn" {
 }
 
 output "role_readonly_name" {
-  value       = "${join("", aws_iam_role.readonly.*.name)}"
+  value       = "${local.role_readonly_name}"
   description = "Readonly role name"
+}
+
+output "switchrole_admin_url" {
+  description = "URL to the IAM console to switch to the admin role"
+  value       = "${local.enabled ? format(var.switchrole_url, data.aws_caller_identity.current.account_id, local.role_admin_name, local.role_admin_name) : ""}"
+}
+
+output "switchrole_readonly_url" {
+  description = "URL to the IAM console to switch to the readonly role"
+  value       = "${local.enabled ? format(var.switchrole_url, data.aws_caller_identity.current.account_id, local.role_readonly_name, local.role_readonly_name) : ""}"
 }
