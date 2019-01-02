@@ -56,10 +56,10 @@ output "role_readonly_name" {
 
 output "switchrole_admin_url" {
   description = "URL to the IAM console to switch to the admin role"
-  value       = "${format(var.switchrole_url, data.aws_caller_identity.current.account_id, local.role_admin_name, local.role_admin_name)}"
+  value       = "${local.enabled ? format(var.switchrole_url, data.aws_caller_identity.current.account_id, local.role_admin_name, local.role_admin_name) : ""}"
 }
 
 output "switchrole_readonly_url" {
   description = "URL to the IAM console to switch to the readonly role"
-  value       = "${format(var.switchrole_url, data.aws_caller_identity.current.account_id, local.role_readonly_name, local.role_readonly_name)}"
+  value       = "${local.enabled ? format(var.switchrole_url, data.aws_caller_identity.current.account_id, local.role_readonly_name, local.role_readonly_name) : ""}"
 }
