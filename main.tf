@@ -232,7 +232,7 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
 }
 
 resource "aws_iam_group_policy_attachment" "key_management_admin" {
-  group      = "${aws_iam_group.admin.name}"
+  group      = "${join("", aws_iam_group.admin.*.name)}"
   policy_arn = "${aws_iam_policy.allow_key_management_admin.arn}"
 }
 
@@ -246,7 +246,7 @@ resource "aws_iam_group_membership" "admin" {
   count = "${local.enabled && local.admin_user_names ? 1 : 0}"
   name  = "${module.admin_label.id}"
   group = "${join("", aws_iam_group.admin.*.id)}"
-  users = ["${var.admin_user_names}"]
+  users = var.admin_user_names
 }
 
 # Readonly config
@@ -315,7 +315,7 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
 }
 
 resource "aws_iam_group_policy_attachment" "key_management_readonly" {
-  group      = "${aws_iam_group.readonly.name}"
+  group      = "${join("", aws_iam_group.readonly.*.name)}"
   policy_arn = "${aws_iam_policy.allow_key_management_readonly.arn}"
 }
 
@@ -329,7 +329,7 @@ resource "aws_iam_group_membership" "readonly" {
   count = "${local.enabled && local.readonly_user_names ? 1 : 0}"
   name  = "${module.readonly_label.id}"
   group = "${join("", aws_iam_group.readonly.*.id)}"
-  users = ["${var.readonly_user_names}"]
+  users = var.readonly_user_names
 }
 
 locals {
