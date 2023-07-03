@@ -1,21 +1,15 @@
 module "admin_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.admin_name
-  delimiter  = var.delimiter
-  attributes = var.attributes
-  tags       = var.tags
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+  name    = var.admin_name
+  context = module.this.context
 }
 
 module "readonly_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.readonly_name
-  delimiter  = var.delimiter
-  attributes = var.attributes
-  tags       = var.tags
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+  name    = var.readonly_name
+  context = module.this.context
 }
 
 data "aws_caller_identity" "current" {}
@@ -161,7 +155,7 @@ data "aws_iam_policy_document" "allow_key_management" {
 # Admin config
 
 locals {
-  enabled             = var.enabled == "true" ? true : false
+  enabled             = module.this.enabled
   admin_user_names    = length(var.admin_user_names) > 0 ? true : false
   readonly_user_names = length(var.readonly_user_names) > 0 ? true : false
 }
@@ -181,9 +175,10 @@ resource "aws_iam_policy" "allow_change_password_admin" {
 }
 
 resource "aws_iam_policy" "allow_key_management_admin" {
+  count       = local.enabled ? 1 : 0
   name        = "${module.admin_label.id}-allow-key-management"
   description = "Allow admin users to manage their own access keys"
-  policy      = data.aws_iam_policy_document.allow_key_management.json
+  policy      = join("", data.aws_iam_policy_document.allow_key_management.*.json)
 }
 
 data "aws_iam_policy_document" "assume_role_admin" {
@@ -232,8 +227,9 @@ resource "aws_iam_group_policy_attachment" "allow_chage_password_admin" {
 }
 
 resource "aws_iam_group_policy_attachment" "key_management_admin" {
-  group      = aws_iam_group.admin.name
-  policy_arn = aws_iam_policy.allow_key_management_admin.arn
+  count      = local.enabled ? 1 : 0
+  group      = join("", aws_iam_group.admin.*.name)
+  policy_arn = join("", aws_iam_policy.allow_key_management_admin.*.arn)
 }
 
 resource "aws_iam_role_policy_attachment" "admin" {
@@ -246,7 +242,7 @@ resource "aws_iam_group_membership" "admin" {
   count = local.enabled && local.admin_user_names ? 1 : 0
   name  = module.admin_label.id
   group = join("", aws_iam_group.admin.*.id)
-  users = ["${var.admin_user_names}"]
+  users = var.admin_user_names
 }
 
 # Readonly config
@@ -315,8 +311,9 @@ resource "aws_iam_group_policy_attachment" "allow_change_password_readonly" {
 }
 
 resource "aws_iam_group_policy_attachment" "key_management_readonly" {
-  group      = aws_iam_group.readonly.name
-  policy_arn = aws_iam_policy.allow_key_management_readonly.arn
+  count      = local.enabled ? 1 : 0
+  group      = join("", aws_iam_group.readonly.*.name)
+  policy_arn = join("", aws_iam_policy.allow_key_management_readonly.*.arn)
 }
 
 resource "aws_iam_role_policy_attachment" "readonly" {
@@ -329,7 +326,7 @@ resource "aws_iam_group_membership" "readonly" {
   count = local.enabled && local.readonly_user_names ? 1 : 0
   name  = module.readonly_label.id
   group = join("", aws_iam_group.readonly.*.id)
-  users = ["${var.readonly_user_names}"]
+  users = var.readonly_user_names
 }
 
 locals {
