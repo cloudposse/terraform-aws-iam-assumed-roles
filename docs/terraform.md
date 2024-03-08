@@ -13,8 +13,8 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_admin_label"></a> [admin\_label](#module\_admin\_label) | git::https://github.com/cloudposse/terraform-null-label.git | tags/0.3.3 |
-| <a name="module_readonly_label"></a> [readonly\_label](#module\_readonly\_label) | git::https://github.com/cloudposse/terraform-null-label.git | tags/0.3.3 |
+| <a name="module_admin_label"></a> [admin\_label](#module\_admin\_label) | git::https://github.com/cloudposse/terraform-null-label.git | 0.25.0 |
+| <a name="module_readonly_label"></a> [readonly\_label](#module\_readonly\_label) | git::https://github.com/cloudposse/terraform-null-label.git | 0.25.0 |
 
 ## Resources
 
